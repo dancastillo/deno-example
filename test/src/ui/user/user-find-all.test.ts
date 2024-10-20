@@ -42,7 +42,7 @@ Deno.test("WorkspaceService :: Routes :: GET one user", async (t) => {
     const status = response.status;
 
     assertEquals(status, 200);
-    assertEquals(result, { users: FIND_ALL_USERS});
+    assertEquals(result, { users: FIND_ALL_USERS });
 
     abortController.abort();
     await fastify.close();
