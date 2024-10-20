@@ -5,13 +5,21 @@ import type {
   FastifyReply,
   FastifyRequest,
 } from "npm:fastify@5.0.0";
-import helloWorld from "./routes/hello-word.ts";
+import helloWorld from "./ui/hello/rest/index.ts";
+import user from "./ui/user/rest/index.ts";
+import { postgresClient } from "./infrastucture/database/postgres/connection.ts";
 
 export default async function workflowService(
   fastify: FastifyInstance,
   _opts: FastifyPluginOptions,
 ) {
   await fastify.register(helloWorld);
+  await fastify.register(user);
+
+  fastify.addHook("onClose", async () => {
+    fastify.log.info("Closing database connections");
+    await postgresClient().closeDatabaseConnections();
+  });
 
   fastify.setErrorHandler(
     (err: FastifyError, request: FastifyRequest, reply: FastifyReply) => {
